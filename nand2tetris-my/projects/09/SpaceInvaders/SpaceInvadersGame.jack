@@ -1,0 +1,79 @@
+class SpaceInvadersGame {
+    field Ship ship;
+    field int isBullet;
+
+    // need to: 
+	//	- create a bullet = DONE
+	//	- decide which enemy will fire the bullet - 
+	// 	- move the bullet - DONE
+	// 	- destroy missiles - 
+	//	- did a missile hit target? - 
+
+    constructor SpaceInvadersGame new() {
+        let ship = Ship.new(0);
+        return this;
+    }
+
+    method void dispose() {
+        do ship.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Moves the square in the current direction. */
+    method void moveShip(int direction) {
+        if (direction = 3) { do ship.moveLeft(); }
+        if (direction = 4) { do ship.moveRight(); }
+        do Sys.wait(50);  // delays the next movement
+        return;
+    }
+
+    method void run() {
+        var char key;
+        var boolean exit;
+        var int direction;
+        var Bullet b;
+        
+        let exit = false;
+        let isBullet = 0;
+
+        // do Output.moveCursor(0,0);
+		// do Output.printString("SCORE: ");
+        
+        while (~exit) {
+            if (isBullet = 1) {
+                do b.fire();
+                do trackBullet(b);
+                // let didHit1 = hitEnemy(b);
+                // if (didHit1 = 1) {
+                //     do b.dispose();
+                //     let isBullet = 0;
+                // }
+            }
+
+
+            let key = Keyboard.keyPressed();
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 130) { do moveShip(3); }   // left arrow
+            if (key = 132) { do moveShip(4); }   // right arrow
+            if (key = 32) {
+                if (isBullet = 0) {
+					// let time = time + 1;	
+					do ship.fireBullet();
+					let isBullet = 1;
+                    let b = ship.getBullet();
+				}
+            }
+        }
+        return;
+    }
+
+
+    method void trackBullet(Bullet b) {
+		if (b.getY() = 0) {
+			let isBullet = 0;
+			do b.dispose();
+		}
+		return;
+	}
+}
